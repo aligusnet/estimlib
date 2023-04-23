@@ -4,6 +4,7 @@
 #include <cstddef>
 #include <memory>
 #include <type_traits>
+#include <vector>
 
 namespace estimlib {
 // Block must be unsigned integer
@@ -62,7 +63,7 @@ public:
         return (_bitBlocks[index.block] & mask) != 0;
     }
 
-    BitReference operator[](::std::size_t bitIndex) {
+    BitReference operator[](size_t bitIndex) {
         const auto index = getIndex(bitIndex);
         const BlockType mask = static_cast<BlockType>(1) << index.bit;
         return BitReference{_bitBlocks[index.block], mask};
@@ -149,6 +150,10 @@ public:
         }
     }
 
+    size_t size() const {
+        return _size;
+    }
+
 private:
     static inline constexpr size_t calculateNumberOfBlocks(size_t size) {
         return (size / BitsPerBlock) * BitsPerBlock + (size % BitsPerBlock == 0 ? 0 : 1);
@@ -176,7 +181,7 @@ private:
     }
 
     size_t _size;
-    std::vector<Block> _bitBlocks;
+    std::vector<BlockType> _bitBlocks;
 };
 
 }  // namespace estimlib
